@@ -1,0 +1,1086 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/industry-9ba123f0-cc88-4119-b74c-98233e5f054d/styles.css">
+<script src="_ds/industry-9ba123f0-cc88-4119-b74c-98233e5f054d/_ds_bundle.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable-gov-dynamic-subset.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&amp;display=swap">
+<style>
+body { margin: 0; background: #f4f5f6; }
+a { color: #1c589c; text-decoration: none; }
+a:hover { color: #063a74; text-decoration: underline; }
+select, button { font-family: inherit; }
+*:focus-visible { outline: 2px solid #1c589c; outline-offset: 1px; }
+</style>
+</helmet>
+
+<div style="min-height: 100vh; display: flex; flex-direction: column; background: #f4f5f6; color: #1e2124; font-family: 'PretendardGOV Variable', 'Pretendard Variable', Pretendard, system-ui, sans-serif; font-size: 14px; line-height: 1.5; -webkit-font-smoothing: antialiased;">
+
+  <div style="background: #052b57; color: #b9c6d6; font-size: 12px; padding: 5px 24px; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap;">
+    <span>대한민국 교육부 · 시·도교육청 교육행정데이터 분석 플랫폼</span>
+    <span>대내 업무용 · 정책기획과 담당자 로그인</span>
+  </div>
+
+  <div style="background: #063a74; border-bottom: 3px solid #3fa654; padding: 15px 24px; display: flex; align-items: center; gap: 18px; flex-wrap: wrap;">
+    <div style="border: 1px solid #ffffff; padding: 5px 9px; color: #ffffff; font-size: 13px; font-weight: 700; letter-spacing: 0.14em; line-height: 1;">EDU·DATA</div>
+    <div style="flex: 1; min-width: 260px;">
+      <div style="color: #ffffff; font-size: 17.5px; font-weight: 700; letter-spacing: -0.01em;">교원 업무 부담 예측 및 업무 경감 지원 시스템</div>
+      <div style="color: #a8bad0; font-size: 12.5px; margin-top: 2px;">교육행정데이터 기반 업무 부담 정량화 · 과중 위험 예측 · 경감 자원 배분 지원</div>
+    </div>
+    <div style="color: #cdd1d5; font-size: 12.5px; text-align: right; font-family: 'JetBrains Mono', monospace;">
+      <div>모델 v1.3 · AUC 0.87</div>
+      <div style="color: #8fa6c0;">데이터 기준일 {{ baseDate }}</div>
+    </div>
+  </div>
+
+  <div style="background: #ffffff; border-bottom: 1px solid #b1b8be; padding: 0 24px; display: flex; align-items: stretch; gap: 0; flex-wrap: wrap;">
+    <div onClick="{{ goStatus }}" style="padding: 11px 22px; font-size: 15px; font-weight: 700; cursor: pointer; border-bottom: 3px solid {{ statusBorder }}; color: {{ statusColor }};">업무 부담 현황</div>
+    <div onClick="{{ goForecast }}" style="padding: 11px 22px; font-size: 15px; font-weight: 700; cursor: pointer; border-bottom: 3px solid {{ forecastBorder }}; color: {{ forecastColor }};">업무 과중 예측</div>
+    <div style="flex: 1;"></div>
+    <div style="display: flex; align-items: center; gap: 14px; font-size: 12.5px; color: #5b656e;">
+      <span>분석 대상 기간 2016 ~ 2026</span>
+      <span style="color: #cdd1d5;">|</span>
+      <span>NEIS · 업무관리시스템 연계</span>
+    </div>
+  </div>
+
+  <div style="padding: 18px 24px 30px; display: flex; flex-direction: column; gap: 16px; --rp: {{ rowPad }};">
+
+    <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; flex-wrap: wrap; border-bottom: 2px solid #063a74; padding-bottom: 8px;">
+      <div>
+        <div style="font-size: 18px; font-weight: 700; color: #1e2124;">{{ pageTitle }}</div>
+        <div style="font-size: 12.5px; color: #5b656e; margin-top: 2px;">{{ pageSub }}</div>
+      </div>
+    </div>
+
+    <div style="background: #ffffff; border: 1px solid #cdd1d5; padding: 10px 12px; display: flex; gap: 14px; align-items: flex-end; flex-wrap: wrap;">
+      <div style="display: flex; flex-direction: column; gap: 3px;">
+        <label style="font-size: 12px; color: #5b656e;">교육지원청</label>
+        <select value="{{ region }}" onChange="{{ onRegion }}" style="height: 30px; min-width: 150px; border: 1px solid #cdd1d5; border-radius: 2px; font-size: 13px; padding: 0 6px; background: #ffffff; color: #1e2124;">
+          <sc-for list="{{ regions }}" as="r" hint-placeholder-count="6"><option value="{{ r }}">{{ r }}</option></sc-for>
+        </select>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 3px;">
+        <label style="font-size: 12px; color: #5b656e;">학교급</label>
+        <select value="{{ level }}" onChange="{{ onLevel }}" style="height: 30px; min-width: 110px; border: 1px solid #cdd1d5; border-radius: 2px; font-size: 13px; padding: 0 6px; background: #ffffff; color: #1e2124;">
+          <sc-for list="{{ levels }}" as="l" hint-placeholder-count="4"><option value="{{ l }}">{{ l }}</option></sc-for>
+        </select>
+      </div>
+      <sc-if value="{{ showPeriod }}" hint-placeholder-val="{{ true }}">
+      <div style="display: flex; flex-direction: column; gap: 3px;">
+        <label style="font-size: 12px; color: #5b656e;">학년도</label>
+        <select value="{{ year }}" onChange="{{ onYear }}" style="height: 30px; min-width: 120px; border: 1px solid #cdd1d5; border-radius: 2px; font-size: 13px; padding: 0 6px; background: #ffffff; color: #1e2124;">
+          <sc-for list="{{ years }}" as="y" hint-placeholder-count="3"><option value="{{ y }}">{{ y }}</option></sc-for>
+        </select>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 3px;">
+        <label style="font-size: 12px; color: #5b656e;">학기</label>
+        <select value="{{ sem }}" onChange="{{ onSem }}" style="height: 30px; min-width: 96px; border: 1px solid #cdd1d5; border-radius: 2px; font-size: 13px; padding: 0 6px; background: #ffffff; color: #1e2124;">
+          <sc-for list="{{ sems }}" as="s" hint-placeholder-count="2"><option value="{{ s }}">{{ s }}</option></sc-for>
+        </select>
+      </div>
+      </sc-if>
+      <div style="flex: 1;"></div>
+      <div style="font-size: 12.5px; color: #5b656e;">대상 <strong style="color: #063a74; font-family: 'JetBrains Mono', monospace;">{{ schoolPop }}</strong>교 · 교원 <strong style="color: #063a74; font-family: 'JetBrains Mono', monospace;">{{ teacherPop }}</strong>명</div>
+      <button onClick="{{ onReset }}" style="height: 30px; border: 1px solid #b1b8be; background: #f4f5f6; color: #1e2124; font-size: 13px; padding: 0 12px; border-radius: 2px; cursor: pointer;">초기화</button>
+    </div>
+
+    <div style="background: #ffffff; border: 1px solid #cdd1d5; padding: 14px 18px; display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 14px 18px;">
+      <sc-for list="{{ kpis }}" as="k" hint-placeholder-count="4">
+        <div>
+          <div style="font-size: 12px; color: #5b656e;">{{ k.label }}</div>
+          <div style="margin-top: 2px; display: flex; align-items: baseline; gap: 4px;">
+            <span style="font-size: 24px; font-weight: 700; color: #063a74; font-family: 'JetBrains Mono', monospace; letter-spacing: -0.02em;">{{ k.value }}</span>
+            <span style="font-size: 13px; color: #5b656e;">{{ k.unit }}</span>
+          </div>
+          <div style="font-size: 12px; color: {{ k.deltaColor }}; margin-top: 1px;">{{ k.delta }}</div>
+        </div>
+      </sc-for>
+    </div>
+
+    <sc-if value="{{ isStatus }}" hint-placeholder-val="{{ true }}">
+    <div style="display: flex; flex-direction: column; gap: 16px;">
+
+      <div style="background: #ffffff; border: 1px solid #cdd1d5;">
+        <div style="padding: 9px 12px; border-bottom: 1px solid #cdd1d5; display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap;">
+          <span style="font-size: 15.5px; font-weight: 700; color: #063a74;">교원 업무 부담 추이</span>
+          <div style="display: flex; gap: 14px; font-size: 12px; color: #5b656e; align-items: center; flex-wrap: wrap;">
+            <span><span style="display: inline-block; width: 16px; height: 2px; background: #063a74; vertical-align: middle; margin-right: 5px;"></span>월 평균 업무부담지수</span>
+            <span><span style="display: inline-block; width: 16px; height: 2px; background: #b1b8be; vertical-align: middle; margin-right: 5px;"></span>전체 평균 100</span>
+            <span style="color: #1e2124;">선택 학기 구간 음영</span>
+          </div>
+        </div>
+        <div style="padding: 12px;">
+          <div style="position: relative;">
+            <svg viewBox="0 0 1040 280" style="display: block; width: 100%; height: auto; aspect-ratio: 1040 / 280;">
+              <sc-for list="{{ trend.gridLines }}" as="g" hint-placeholder-count="5">
+                <line x1="40" x2="1028" y1="{{ g.y }}" y2="{{ g.y }}" stroke="#cdd1d5" stroke-width="1"></line>
+              </sc-for>
+              <rect x="{{ trend.bandX }}" y="12" width="{{ trend.bandW }}" height="234" fill="#1c589c" fill-opacity="0.08"></rect>
+              <line x1="40" x2="1028" y1="{{ trend.avgY }}" y2="{{ trend.avgY }}" stroke="#b1b8be" stroke-width="1.5" stroke-dasharray="6 4"></line>
+              <path d="{{ trend.path }}" fill="none" stroke="#063a74" stroke-width="2.5"></path>
+              <sc-for list="{{ trend.dots }}" as="d" hint-placeholder-count="12">
+                <circle cx="{{ d.x }}" cy="{{ d.y }}" r="3" fill="#063a74"></circle>
+              </sc-for>
+            </svg>
+            <div style="position: absolute; inset: 0; pointer-events: none;">
+              <sc-for list="{{ trend.gridLines }}" as="g" hint-placeholder-count="5">
+                <div style="position: absolute; left: 0; width: 3.1%; top: {{ g.top }}; transform: translateY(-50%); text-align: right; font-size: 11px; color: #5b656e; font-family: 'JetBrains Mono', monospace; line-height: 1;">{{ g.label }}</div>
+              </sc-for>
+              <sc-for list="{{ trend.dots }}" as="d" hint-placeholder-count="12">
+                <div style="position: absolute; left: {{ d.left }}; top: {{ d.top }}; transform: translate(-50%, -100%); font-size: 11px; color: #063a74; font-family: 'JetBrains Mono', monospace; line-height: 1;">{{ d.v }}</div>
+              </sc-for>
+              <sc-for list="{{ trend.xLabels }}" as="x" hint-placeholder-count="12">
+                <div style="position: absolute; left: {{ x.left }}; bottom: 3%; transform: translateX(-50%); font-size: 10.5px; color: {{ x.color }}; line-height: 1; white-space: nowrap;">{{ x.label }}</div>
+              </sc-for>
+            </div>
+          </div>
+          <div style="margin-top: 6px; font-size: 12.5px; color: #5b656e;">{{ trend.caption }}</div>
+        </div>
+      </div>
+
+      <div style="background: #ffffff; border: 1px solid #cdd1d5;">
+        <div style="padding: 9px 12px; border-bottom: 1px solid #cdd1d5; display: flex; justify-content: space-between; align-items: baseline; gap: 8px;">
+          <span style="font-size: 15.5px; font-weight: 700; color: #063a74;">학교 특성별 업무 부담 비교</span>
+          <span style="font-size: 12px; color: #5b656e;">구간별 평균 부담지수 · 100 = 전체 평균</span>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));">
+          <sc-for list="{{ traits }}" as="t" hint-placeholder-count="3">
+            <div style="padding: 12px 14px; border-right: 1px solid #cdd1d5;">
+              <div style="font-size: 13px; font-weight: 700; color: #1e2124; border-bottom: 1px solid #cdd1d5; padding-bottom: 5px;">{{ t.title }}</div>
+              <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 10px;">
+                <sc-for list="{{ t.rows }}" as="r" hint-placeholder-count="3">
+                  <div>
+                    <div style="display: flex; justify-content: space-between; font-size: 13px; gap: 8px;">
+                      <span>{{ r.name }}</span>
+                      <span style="font-family: 'JetBrains Mono', monospace; font-weight: 700; color: {{ r.color }};">{{ r.v }}</span>
+                    </div>
+                    <div style="height: 10px; background: #f4f5f6; border: 1px solid #cdd1d5; margin-top: 3px;">
+                      <div style="height: 100%; width: {{ r.w }}; background: {{ r.color }};"></div>
+                    </div>
+                    <div style="font-size: 12px; color: #5b656e; margin-top: 2px;">{{ r.meta }}</div>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 16px;">
+        <div style="background: #ffffff; border: 1px solid #cdd1d5;">
+          <div style="padding: 9px 12px; border-bottom: 1px solid #cdd1d5; display: flex; justify-content: space-between; align-items: baseline; gap: 8px;">
+            <span style="font-size: 15.5px; font-weight: 700; color: #063a74;">업무 유형별 업무 부담 현황</span>
+            <span style="font-size: 12px; color: #5b656e;">교원 1인 주당 평균 · 카테고리 선택 시 포함 업무 표시</span>
+          </div>
+          <div style="padding: 12px;">
+            <div style="display: flex; height: 22px; border: 1px solid #b1b8be;">
+              <sc-for list="{{ catBar }}" as="t" hint-placeholder-count="5">
+                <div title="{{ t.name }}" style="width: {{ t.pct }}; background: {{ t.color }};"></div>
+              </sc-for>
+            </div>
+            <div style="display: flex; gap: 12px; margin-top: 7px; flex-wrap: wrap;">
+              <sc-for list="{{ catBar }}" as="t" hint-placeholder-count="5">
+                <span style="font-size: 12px; color: #1e2124;"><span style="display: inline-block; width: 8px; height: 8px; background: {{ t.color }}; margin-right: 6px;"></span>{{ t.short }} {{ t.hours }}</span>
+              </sc-for>
+            </div>
+            <table style="width: 100%; border-collapse: collapse; margin-top: 12px;">
+              <thead>
+                <tr style="background: #f4f5f6;">
+                  <th style="text-align: left; font-size: 13px; font-weight: 700; padding: 6px 8px; border-bottom: 1px solid #b1b8be;">카테고리</th>
+                  <th style="text-align: right; font-size: 13px; font-weight: 700; padding: 6px 8px; border-bottom: 1px solid #b1b8be;">주당 시간</th>
+                  <th style="text-align: right; font-size: 13px; font-weight: 700; padding: 6px 8px; border-bottom: 1px solid #b1b8be;">비중</th>
+                  <th style="text-align: right; font-size: 13px; font-weight: 700; padding: 6px 8px; border-bottom: 1px solid #b1b8be;">전 학기 대비</th>
+                  <th style="text-align: left; font-size: 13px; font-weight: 700; padding: 6px 8px; border-bottom: 1px solid #b1b8be;">주당 시간 비교 (최대 카테고리 = 100%)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <sc-for list="{{ catRows }}" as="t" hint-placeholder-count="5">
+                  <tr onClick="{{ t.toggle }}" style="cursor: pointer; background: {{ t.bg }};">
+                    <td style="font-size: 15px; font-weight: 700; padding: var(--rp) 8px; border-bottom: 1px solid #cdd1d5;">
+                      <span style="display: inline-block; width: 14px; color: #5b656e; font-family: 'JetBrains Mono', monospace;">{{ t.caret }}</span>{{ t.name }}
+                    </td>
+                    <td style="font-size: 13.5px; text-align: right; padding: var(--rp) 8px; border-bottom: 1px solid #cdd1d5; font-family: 'JetBrains Mono', monospace; font-weight: 700;">{{ t.hours }}</td>
+                    <td style="font-size: 13.5px; text-align: right; padding: var(--rp) 8px; border-bottom: 1px solid #cdd1d5; font-family: 'JetBrains Mono', monospace;">{{ t.pct }}</td>
+                    <td style="font-size: 13.5px; text-align: right; padding: var(--rp) 8px; border-bottom: 1px solid #cdd1d5; font-family: 'JetBrains Mono', monospace; color: {{ t.dcolor }};">{{ t.delta }}</td>
+                    <td style="padding: var(--rp) 8px; border-bottom: 1px solid #cdd1d5;">
+                      <div style="height: 9px; background: #f4f5f6; border: 1px solid #cdd1d5; min-width: 90px;">
+                        <div style="height: 100%; width: {{ t.w }}; background: {{ t.color }};"></div>
+                      </div>
+                    </td>
+                  </tr>
+                  <sc-for list="{{ t.subs }}" as="s" hint-placeholder-count="0">
+                    <tr style="background: #fafbfc;">
+                      <td style="font-size: 13.5px; padding: var(--rp) 8px var(--rp) 30px; border-bottom: 1px solid #cdd1d5; color: #5b656e;">{{ s.name }}</td>
+                      <td style="font-size: 13.5px; text-align: right; padding: var(--rp) 8px; border-bottom: 1px solid #cdd1d5; font-family: 'JetBrains Mono', monospace;">{{ s.hours }}</td>
+                      <td style="font-size: 13.5px; text-align: right; padding: var(--rp) 8px; border-bottom: 1px solid #cdd1d5; font-family: 'JetBrains Mono', monospace;">{{ s.pct }}</td>
+                      <td style="font-size: 13.5px; text-align: right; padding: var(--rp) 8px; border-bottom: 1px solid #cdd1d5; font-family: 'JetBrains Mono', monospace; color: {{ s.dcolor }};">{{ s.delta }}</td>
+                      <td style="padding: var(--rp) 8px; border-bottom: 1px solid #cdd1d5;">
+                        <div style="height: 7px; background: #f4f5f6; border: 1px solid #cdd1d5; min-width: 90px;">
+                          <div style="height: 100%; width: {{ s.w }}; background: #9dbcdd;"></div>
+                        </div>
+                      </td>
+                    </tr>
+                  </sc-for>
+                </sc-for>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div style="background: #ffffff; border: 1px solid #cdd1d5;">
+          <div style="padding: 9px 12px; border-bottom: 1px solid #cdd1d5; display: flex; justify-content: space-between; align-items: baseline; gap: 8px;">
+            <span style="font-size: 15.5px; font-weight: 700; color: #063a74;">직위·담당업무별 업무 부담 수준</span>
+            <span style="font-size: 12px; color: #5b656e;">부담지수 100 = 전체 평균</span>
+          </div>
+          <table style="width: 100%; border-collapse: collapse;">
+            <thead>
+              <tr style="background: #f4f5f6;">
+                <th style="text-align: left; font-size: 13px; font-weight: 700; padding: 7px 10px; border-bottom: 1px solid #b1b8be;">직위 · 담당업무</th>
+                <th style="text-align: right; font-size: 13px; font-weight: 700; padding: 7px 10px; border-bottom: 1px solid #b1b8be;">교원 수</th>
+                <th style="text-align: right; font-size: 13px; font-weight: 700; padding: 7px 10px; border-bottom: 1px solid #b1b8be;">주당 행정시간</th>
+                <th style="text-align: right; font-size: 13px; font-weight: 700; padding: 7px 10px; border-bottom: 1px solid #b1b8be;">담당 업무 수</th>
+                <th style="text-align: left; font-size: 13px; font-weight: 700; padding: 7px 10px; border-bottom: 1px solid #b1b8be;">부담지수</th>
+              </tr>
+            </thead>
+            <tbody>
+              <sc-for list="{{ roles }}" as="r" hint-placeholder-count="6">
+                <tr>
+                  <td style="font-size: 15px; padding: var(--rp) 10px; border-bottom: 1px solid #cdd1d5;">{{ r.name }}</td>
+                  <td style="font-size: 13.5px; text-align: right; padding: var(--rp) 10px; border-bottom: 1px solid #cdd1d5; font-family: 'JetBrains Mono', monospace;">{{ r.n }}</td>
+                  <td style="font-size: 13.5px; text-align: right; padding: var(--rp) 10px; border-bottom: 1px solid #cdd1d5; font-family: 'JetBrains Mono', monospace;">{{ r.hours }}</td>
+                  <td style="font-size: 13.5px; text-align: right; padding: var(--rp) 10px; border-bottom: 1px solid #cdd1d5; font-family: 'JetBrains Mono', monospace;">{{ r.tasks }}</td>
+                  <td style="padding: var(--rp) 10px; border-bottom: 1px solid #cdd1d5;">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                      <div style="flex: 1; height: 10px; background: #f4f5f6; border: 1px solid #cdd1d5;">
+                        <div style="height: 100%; width: {{ r.w }}; background: {{ r.color }};"></div>
+                      </div>
+                      <span style="width: 34px; text-align: right; font-size: 13.5px; font-weight: 700; font-family: 'JetBrains Mono', monospace; color: {{ r.color }};">{{ r.idx }}</span>
+                    </div>
+                  </td>
+                </tr>
+              </sc-for>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div style="background: #ffffff; border: 1px solid #cdd1d5;">
+        <div style="padding: 9px 12px; border-bottom: 1px solid #cdd1d5; display: flex; justify-content: space-between; align-items: baseline; gap: 8px;">
+          <span style="font-size: 15.5px; font-weight: 700; color: #063a74;">지역·학교별 업무 부담 현황</span>
+          <span style="font-size: 12px; color: #5b656e;">카토그램 셀 선택 시 해당 지원청으로 필터 · 학교 행 선택 시 상세 내역 표시</span>
+        </div>
+        <div style="display: grid; grid-template-columns: minmax(300px, 380px) minmax(0, 1fr);">
+        <div style="padding: 12px; border-right: 1px solid #cdd1d5;">
+          <div style="display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); grid-auto-rows: 1fr; gap: 3px;">
+            <sc-for list="{{ cartogram }}" as="c" hint-placeholder-count="22">
+              <div onClick="{{ c.pick }}" style="grid-column: {{ c.col }}; grid-row: {{ c.row }}; aspect-ratio: 1; cursor: pointer; background: {{ c.fill }}; border: {{ c.border }}; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px;">
+                <span style="font-size: 11.5px; font-weight: 700; color: {{ c.ink }}; line-height: 1;">{{ c.name }}</span>
+                <span style="font-size: 11px; color: {{ c.ink }}; font-family: 'JetBrains Mono', monospace; line-height: 1;">{{ c.idx }}</span>
+              </div>
+            </sc-for>
+          </div>
+          <div style="margin-top: 12px; border-top: 1px solid #cdd1d5; padding-top: 9px;">
+            <div style="font-size: 12px; color: #5b656e;">부담지수 구간</div>
+            <div style="display: flex; gap: 3px; margin-top: 5px;">
+              <sc-for list="{{ cartoLegend }}" as="l" hint-placeholder-count="4">
+                <div style="flex: 1;">
+                  <div style="height: 10px; background: {{ l.fill }}; border: 1px solid #b1b8be;"></div>
+                  <div style="font-size: 11px; color: #5b656e; margin-top: 3px; font-family: 'JetBrains Mono', monospace;">{{ l.label }}</div>
+                </div>
+              </sc-for>
+            </div>
+            <div style="font-size: 12px; color: #5b656e; margin-top: 8px;">{{ cartoNote }}</div>
+          </div>
+        </div>
+        <div style="overflow-x: auto;">
+          <table style="width: 100%; min-width: 640px; border-collapse: collapse;">
+            <thead>
+              <tr style="background: #f4f5f6;">
+                <th style="text-align: left; font-size: 13px; font-weight: 700; padding: 7px 10px; border-bottom: 1px solid #b1b8be;">학교명</th>
+                <th style="text-align: left; font-size: 13px; font-weight: 700; padding: 7px 10px; border-bottom: 1px solid #b1b8be;">교육지원청</th>
+                <th style="text-align: left; font-size: 13px; font-weight: 700; padding: 7px 10px; border-bottom: 1px solid #b1b8be;">학교급</th>
+                <th style="text-align: right; font-size: 13px; font-weight: 700; padding: 7px 10px; border-bottom: 1px solid #b1b8be;">학급수</th>
+                <th style="text-align: right; font-size: 13px; font-weight: 700; padding: 7px 10px; border-bottom: 1px solid #b1b8be;">교원수</th>
+                <th style="text-align: right; font-size: 13px; font-weight: 700; padding: 7px 10px; border-bottom: 1px solid #b1b8be;">1인당 학생</th>
+                <th style="text-align: right; font-size: 13px; font-weight: 700; padding: 7px 10px; border-bottom: 1px solid #b1b8be;">주당 행정시간</th>
+                <th style="text-align: right; font-size: 13px; font-weight: 700; padding: 7px 10px; border-bottom: 1px solid #b1b8be;">부담지수</th>
+                <th style="text-align: left; font-size: 13px; font-weight: 700; padding: 7px 10px; border-bottom: 1px solid #b1b8be;">상태</th>
+              </tr>
+            </thead>
+            <tbody>
+              <sc-for list="{{ schools }}" as="s" hint-placeholder-count="10">
+                <tr onClick="{{ s.open }}" style="cursor: pointer; background: {{ s.rowBg }};">
+                  <td style="font-size: 15px; padding: var(--rp) 10px; border-bottom: 1px solid #cdd1d5; color: #1c589c; font-weight: 700;">{{ s.name }}</td>
+                  <td style="font-size: 13.5px; padding: var(--rp) 10px; border-bottom: 1px solid #cdd1d5;">{{ s.region }}</td>
+                  <td style="font-size: 13.5px; padding: var(--rp) 10px; border-bottom: 1px solid #cdd1d5;">{{ s.level }}</td>
+                  <td style="font-size: 13.5px; text-align: right; padding: var(--rp) 10px; border-bottom: 1px solid #cdd1d5; font-family: 'JetBrains Mono', monospace;">{{ s.classes }}</td>
+                  <td style="font-size: 13.5px; text-align: right; padding: var(--rp) 10px; border-bottom: 1px solid #cdd1d5; font-family: 'JetBrains Mono', monospace;">{{ s.teachers }}</td>
+                  <td style="font-size: 13.5px; text-align: right; padding: var(--rp) 10px; border-bottom: 1px solid #cdd1d5; font-family: 'JetBrains Mono', monospace;">{{ s.perTeacher }}</td>
+                  <td style="font-size: 13.5px; text-align: right; padding: var(--rp) 10px; border-bottom: 1px solid #cdd1d5; font-family: 'JetBrains Mono', monospace;">{{ s.hours }}</td>
+                  <td style="font-size: 13.5px; text-align: right; padding: var(--rp) 10px; border-bottom: 1px solid #cdd1d5; font-family: 'JetBrains Mono', monospace; font-weight: 700; color: {{ s.color }};">{{ s.idx }}</td>
+                  <td style="font-size: 13px; padding: var(--rp) 10px; border-bottom: 1px solid #cdd1d5;">
+                    <span style="display: inline-block; border: 1px solid {{ s.color }}; color: {{ s.color }}; border-radius: 2px; padding: 1px 7px; font-weight: 700;">{{ s.label }}</span>
+                  </td>
+                </tr>
+              </sc-for>
+            </tbody>
+          </table>
+        </div>
+        <sc-if value="{{ noSchools }}" hint-placeholder-val="{{ false }}">
+          <div style="grid-column: 1 / -1; padding: 18px 12px; font-size: 13.5px; color: #5b656e; border-top: 1px solid #cdd1d5;">선택한 조건에 해당하는 표본 학교가 없습니다. 교육지원청 또는 학교급 조건을 변경하십시오.</div>
+        </sc-if>
+        </div>
+      </div>
+
+    </div>
+    </sc-if>
+
+    <sc-if value="{{ isForecast }}" hint-placeholder-val="{{ false }}">
+    <div style="display: flex; flex-direction: column; gap: 16px;">
+
+      <div style="background: #ffffff; border: 1px solid #cdd1d5;">
+        <div style="padding: 9px 12px; border-bottom: 1px solid #cdd1d5; display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap;">
+          <span style="font-size: 15.5px; font-weight: 700; color: #063a74;">시기별 업무 과중 위험도 예측 ({{ forecastTerm }})</span>
+          <div style="display: flex; gap: 14px; font-size: 12px; color: #5b656e; align-items: center; flex-wrap: wrap;">
+            <span><span style="display: inline-block; width: 16px; height: 2px; background: #b1b8be; vertical-align: middle; margin-right: 5px;"></span>전년 동기 실측</span>
+            <span><span style="display: inline-block; width: 16px; height: 2px; background: #063a74; vertical-align: middle; margin-right: 5px;"></span>예측</span>
+            <span><span style="display: inline-block; width: 16px; height: 2px; background: #de3412; vertical-align: middle; margin-right: 5px;"></span>과중 임계값 {{ threshold }}</span>
+          </div>
+        </div>
+        <div style="padding: 12px;">
+          <div style="position: relative;">
+            <svg viewBox="0 0 1040 280" style="display: block; width: 100%; height: auto; aspect-ratio: 1040 / 280;">
+              <sc-for list="{{ fc.gridLines }}" as="g" hint-placeholder-count="5">
+                <line x1="40" x2="1028" y1="{{ g.y }}" y2="{{ g.y }}" stroke="#cdd1d5" stroke-width="1"></line>
+              </sc-for>
+              <sc-if value="{{ showBand }}" hint-placeholder-val="{{ true }}">
+                <path d="{{ fc.bandPath }}" fill="#1c589c" fill-opacity="0.14"></path>
+              </sc-if>
+              <sc-for list="{{ fc.peaks }}" as="p" hint-placeholder-count="3">
+                <rect x="{{ p.rx }}" y="12" width="28" height="234" fill="#de3412" fill-opacity="0.07"></rect>
+              </sc-for>
+              <path d="{{ fc.actualPath }}" fill="none" stroke="#b1b8be" stroke-width="2" stroke-dasharray="5 4"></path>
+              <path d="{{ fc.predPath }}" fill="none" stroke="#063a74" stroke-width="2.5"></path>
+              <line x1="40" x2="1028" y1="{{ fc.thresholdY }}" y2="{{ fc.thresholdY }}" stroke="#de3412" stroke-width="1.5" stroke-dasharray="7 4"></line>
+              <sc-for list="{{ fc.peaks }}" as="p" hint-placeholder-count="3">
+                <circle cx="{{ p.x }}" cy="{{ p.y }}" r="4" fill="#de3412"></circle>
+              </sc-for>
+            </svg>
+            <div style="position: absolute; inset: 0; pointer-events: none;">
+              <sc-for list="{{ fc.gridLines }}" as="g" hint-placeholder-count="5">
+                <div style="position: absolute; left: 0; width: 3.1%; top: {{ g.top }}; transform: translateY(-50%); text-align: right; font-size: 11px; color: #5b656e; font-family: 'JetBrains Mono', monospace; line-height: 1;">{{ g.label }}</div>
+              </sc-for>
+              <sc-for list="{{ fc.peaks }}" as="p" hint-placeholder-count="3">
+                <div style="position: absolute; left: {{ p.left }}; top: {{ p.top }}; transform: translate(-50%, -100%); font-size: 12px; font-weight: 700; color: #de3412; line-height: 1;">{{ p.label }}</div>
+              </sc-for>
+              <sc-for list="{{ fc.xLabels }}" as="x" hint-placeholder-count="20">
+                <div style="position: absolute; left: {{ x.left }}; bottom: 3%; transform: translateX(-50%); font-size: 10.5px; color: #5b656e; line-height: 1; white-space: nowrap;">{{ x.label }}</div>
+              </sc-for>
+            </div>
+          </div>
+          <div style="margin-top: 6px; font-size: 12.5px; color: #5b656e;">{{ fc.caption }}</div>
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 16px;">
+        <div style="background: #ffffff; border: 1px solid #cdd1d5;">
+          <div style="padding: 9px 12px; border-bottom: 1px solid #cdd1d5; display: flex; justify-content: space-between; align-items: baseline; gap: 8px;">
+            <span style="font-size: 15.5px; font-weight: 700; color: #063a74;">업무 유형별 예상 부담 수준</span>
+            <span style="font-size: 12px; color: #5b656e;">현재 → 예측 · 주당 시간 · 카테고리 선택 시 포함 업무 표시</span>
+          </div>
+          <table style="width: 100%; border-collapse: collapse;">
+            <thead>
+              <tr style="background: #f4f5f6;">
+                <th style="text-align: left; font-size: 13px; font-weight: 700; padding: 7px 10px; border-bottom: 1px solid #b1b8be;">카테고리</th>
+                <th style="text-align: right; font-size: 13px; font-weight: 700; padding: 7px 10px; border-bottom: 1px solid #b1b8be;">현재</th>
+                <th style="text-align: right; font-size: 13px; font-weight: 700; padding: 7px 10px; border-bottom: 1px solid #b1b8be;">예측</th>
+                <th style="text-align: right; font-size: 13px; font-weight: 700; padding: 7px 10px; border-bottom: 1px solid #b1b8be;">증감</th>
+                <th style="text-align: left; font-size: 13px; font-weight: 700; padding: 7px 10px; border-bottom: 1px solid #b1b8be;">현재 → 예측 비교 (최대 카테고리 = 100%)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <sc-for list="{{ typeForecast }}" as="t" hint-placeholder-count="6">
+                <tr onClick="{{ t.toggle }}" style="cursor: pointer; background: {{ t.bg }};">
+                  <td style="font-size: 15px; font-weight: 700; padding: var(--rp) 10px; border-bottom: 1px solid #cdd1d5;">
+                    <span style="display: inline-block; width: 14px; color: #5b656e; font-family: 'JetBrains Mono', monospace;">{{ t.caret }}</span>{{ t.name }}
+                  </td>
+                  <td style="font-size: 13.5px; text-align: right; padding: var(--rp) 10px; border-bottom: 1px solid #cdd1d5; font-family: 'JetBrains Mono', monospace; color: #5b656e;">{{ t.now }}</td>
+                  <td style="font-size: 13.5px; text-align: right; padding: var(--rp) 10px; border-bottom: 1px solid #cdd1d5; font-family: 'JetBrains Mono', monospace; font-weight: 700;">{{ t.next }}</td>
+                  <td style="font-size: 13.5px; text-align: right; padding: var(--rp) 10px; border-bottom: 1px solid #cdd1d5; font-family: 'JetBrains Mono', monospace; color: {{ t.dcolor }};">{{ t.delta }}</td>
+                  <td style="padding: var(--rp) 10px; border-bottom: 1px solid #cdd1d5;">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                      <div style="flex: 1; height: 10px; background: #f4f5f6; border: 1px solid #cdd1d5; position: relative; min-width: 90px;">
+                        <div style="height: 100%; width: {{ t.wNow }}; background: #b1b8be;"></div>
+                        <div style="position: absolute; top: 0; left: 0; height: 100%; width: {{ t.wNext }}; border-right: 2px solid {{ t.color }};"></div>
+                      </div>
+                      <span style="width: 44px; text-align: right; font-size: 12.5px; font-family: 'JetBrains Mono', monospace; color: {{ t.color }};">{{ t.wNext }}</span>
+                    </div>
+                  </td>
+                </tr>
+                <sc-for list="{{ t.subs }}" as="s" hint-placeholder-count="0">
+                  <tr style="background: #fafbfc;">
+                    <td style="font-size: 13.5px; padding: var(--rp) 10px var(--rp) 32px; border-bottom: 1px solid #cdd1d5; color: #5b656e;">{{ s.name }}</td>
+                    <td style="font-size: 13.5px; text-align: right; padding: var(--rp) 10px; border-bottom: 1px solid #cdd1d5; font-family: 'JetBrains Mono', monospace; color: #5b656e;">{{ s.now }}</td>
+                    <td style="font-size: 13.5px; text-align: right; padding: var(--rp) 10px; border-bottom: 1px solid #cdd1d5; font-family: 'JetBrains Mono', monospace;">{{ s.next }}</td>
+                    <td style="font-size: 13.5px; text-align: right; padding: var(--rp) 10px; border-bottom: 1px solid #cdd1d5; font-family: 'JetBrains Mono', monospace; color: {{ s.dcolor }};">{{ s.delta }}</td>
+                    <td style="padding: var(--rp) 10px; border-bottom: 1px solid #cdd1d5;">
+                      <div style="display: flex; align-items: center; gap: 8px;">
+                        <div style="flex: 1; height: 7px; background: #f4f5f6; border: 1px solid #cdd1d5; position: relative; min-width: 90px;">
+                          <div style="height: 100%; width: {{ s.wNow }}; background: #d4d8dc;"></div>
+                          <div style="position: absolute; top: 0; left: 0; height: 100%; width: {{ s.wNext }}; border-right: 2px solid #9dbcdd;"></div>
+                        </div>
+                        <span style="width: 44px; text-align: right; font-size: 12px; font-family: 'JetBrains Mono', monospace; color: #5b656e;">{{ s.wNext }}</span>
+                      </div>
+                    </td>
+                  </tr>
+                </sc-for>
+              </sc-for>
+            </tbody>
+          </table>
+        </div>
+
+        <div style="background: #ffffff; border: 1px solid #cdd1d5;">
+          <div style="padding: 9px 12px; border-bottom: 1px solid #cdd1d5; display: flex; justify-content: space-between; align-items: baseline; gap: 8px;">
+            <span style="font-size: 15.5px; font-weight: 700; color: #063a74;">업무 과중 주요 영향 요인</span>
+            <span style="font-size: 12px; color: #5b656e;">모델 기여도 · 단위 %</span>
+          </div>
+          <div style="padding: 12px 12px 14px; display: flex; flex-direction: column; gap: 9px;">
+            <sc-for list="{{ factors }}" as="f" hint-placeholder-count="5">
+              <div>
+                <div style="display: flex; justify-content: space-between; font-size: 13.5px; gap: 8px;">
+                  <span>{{ f.name }}</span>
+                  <span style="font-family: 'JetBrains Mono', monospace; font-weight: 700; color: #063a74;">{{ f.v }}</span>
+                </div>
+                <div style="height: 9px; background: #f4f5f6; border: 1px solid #cdd1d5; margin-top: 3px;">
+                  <div style="height: 100%; width: {{ f.w }}; background: {{ f.color }};"></div>
+                </div>
+                <div style="font-size: 12px; color: #5b656e; margin-top: 2px;">{{ f.note }}</div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+
+      <div style="background: #ffffff; border: 1px solid #cdd1d5;">
+        <div style="padding: 9px 12px; border-bottom: 1px solid #cdd1d5; display: flex; justify-content: space-between; align-items: baseline; gap: 8px;">
+          <span style="font-size: 15.5px; font-weight: 700; color: #063a74;">학교별 업무 과중 위험도</span>
+          <span style="font-size: 12px; color: #5b656e;">행 선택 시 상세 내역 표시 · 표본 {{ filteredCount }}교</span>
+        </div>
+        <div style="overflow-x: auto;">
+          <table style="width: 100%; min-width: 900px; border-collapse: collapse;">
+            <thead>
+              <tr style="background: #f4f5f6;">
+                <th style="text-align: left; font-size: 13px; font-weight: 700; padding: 7px 10px; border-bottom: 1px solid #b1b8be;">학교명</th>
+                <th style="text-align: left; font-size: 13px; font-weight: 700; padding: 7px 10px; border-bottom: 1px solid #b1b8be;">교육지원청</th>
+                <th style="text-align: left; font-size: 13px; font-weight: 700; padding: 7px 10px; border-bottom: 1px solid #b1b8be;">학교급</th>
+                <th style="text-align: right; font-size: 13px; font-weight: 700; padding: 7px 10px; border-bottom: 1px solid #b1b8be;">현재 부담지수</th>
+                <th style="text-align: right; font-size: 13px; font-weight: 700; padding: 7px 10px; border-bottom: 1px solid #b1b8be;">예측 위험도</th>
+                <th style="text-align: left; font-size: 13px; font-weight: 700; padding: 7px 10px; border-bottom: 1px solid #b1b8be;">위험도 분포</th>
+                <th style="text-align: left; font-size: 13px; font-weight: 700; padding: 7px 10px; border-bottom: 1px solid #b1b8be;">과중 예상 시기</th>
+                <th style="text-align: left; font-size: 13px; font-weight: 700; padding: 7px 10px; border-bottom: 1px solid #b1b8be;">등급</th>
+              </tr>
+            </thead>
+            <tbody>
+              <sc-for list="{{ riskSchoolRows }}" as="s" hint-placeholder-count="10">
+                <tr onClick="{{ s.open }}" style="cursor: pointer; background: {{ s.rowBg }};">
+                  <td style="font-size: 15px; padding: var(--rp) 10px; border-bottom: 1px solid #cdd1d5; color: #1c589c; font-weight: 700;">{{ s.name }}</td>
+                  <td style="font-size: 13.5px; padding: var(--rp) 10px; border-bottom: 1px solid #cdd1d5;">{{ s.region }}</td>
+                  <td style="font-size: 13.5px; padding: var(--rp) 10px; border-bottom: 1px solid #cdd1d5;">{{ s.level }}</td>
+                  <td style="font-size: 13.5px; text-align: right; padding: var(--rp) 10px; border-bottom: 1px solid #cdd1d5; font-family: 'JetBrains Mono', monospace; color: #5b656e;">{{ s.idx }}</td>
+                  <td style="font-size: 13.5px; text-align: right; padding: var(--rp) 10px; border-bottom: 1px solid #cdd1d5; font-family: 'JetBrains Mono', monospace; font-weight: 700; color: {{ s.color }};">{{ s.risk }}</td>
+                  <td style="padding: var(--rp) 10px; border-bottom: 1px solid #cdd1d5;">
+                    <div style="height: 9px; background: #f4f5f6; border: 1px solid #cdd1d5; min-width: 90px;">
+                      <div style="height: 100%; width: {{ s.w }}; background: {{ s.color }};"></div>
+                    </div>
+                  </td>
+                  <td style="font-size: 13.5px; padding: var(--rp) 10px; border-bottom: 1px solid #cdd1d5;">{{ s.when }}</td>
+                  <td style="font-size: 13px; padding: var(--rp) 10px; border-bottom: 1px solid #cdd1d5;">
+                    <span style="display: inline-block; border: 1px solid {{ s.color }}; color: {{ s.color }}; border-radius: 2px; padding: 1px 7px; font-weight: 700;">{{ s.grade }}</span>
+                  </td>
+                </tr>
+              </sc-for>
+            </tbody>
+          </table>
+        </div>
+        <sc-if value="{{ noSchools }}" hint-placeholder-val="{{ false }}">
+          <div style="padding: 18px 12px; font-size: 13.5px; color: #5b656e; border-top: 1px solid #cdd1d5;">선택한 조건에 해당하는 표본 학교가 없습니다. 교육지원청 또는 학교급 조건을 변경하십시오.</div>
+        </sc-if>
+      </div>
+
+    </div>
+    </sc-if>
+
+  </div>
+
+  <div style="margin-top: auto; background: #063a74; border-top: 3px solid #3fa654; color: #b9c6d6; padding: 18px 24px; font-size: 12.5px; display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
+    <div>
+      <div style="color: #ffffff; font-weight: 700; font-size: 13px;">교육행정데이터 기반 교원 업무 부담 예측 및 업무 경감 지원 모델</div>
+      <div style="margin-top: 3px;">활용 대상: 교육청 · 교육지원청 · 학교 관리자 &nbsp;|&nbsp; 활용 빈도: 분기 1회 및 주요 학사일정 전·후 수시</div>
+    </div>
+    <div style="text-align: right;">
+      <div>본 화면의 수치는 예측 모델 산출값으로, 개별 교원 평가 목적으로 활용할 수 없습니다.</div>
+      <div style="margin-top: 3px;">데이터 출처: NEIS 업무 처리 이력 · 교원 인적 정보 · 학사일정(2016~2026)</div>
+    </div>
+  </div>
+
+  <sc-if value="{{ hasDrawer }}" hint-placeholder-val="{{ false }}">
+    <div style="position: fixed; inset: 0; background: rgba(5, 43, 87, 0.42); z-index: 40;" onClick="{{ closeDrawer }}"></div>
+    <div style="position: fixed; top: 0; right: 0; bottom: 0; width: 420px; max-width: 92vw; background: #ffffff; border-left: 1px solid #b1b8be; z-index: 41; display: flex; flex-direction: column;">
+      <div style="background: #063a74; border-bottom: 3px solid #3fa654; padding: 14px 16px; display: flex; justify-content: space-between; align-items: flex-start; gap: 10px;">
+        <div>
+          <div style="color: #ffffff; font-size: 19px; font-weight: 700;">{{ drawerTitle }}</div>
+          <div style="color: #a8bad0; font-size: 12.5px; margin-top: 2px;">{{ drawerSub }}</div>
+        </div>
+        <button onClick="{{ closeDrawer }}" style="border: 1px solid #ffffff; background: transparent; color: #ffffff; font-size: 13px; padding: 4px 10px; border-radius: 2px; cursor: pointer;">닫기</button>
+      </div>
+      <div style="padding: 14px 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px;">
+        <table style="width: 100%; border-collapse: collapse;">
+          <tbody>
+            <sc-for list="{{ drawerRows }}" as="d" hint-placeholder-count="7">
+              <tr>
+                <th style="text-align: left; font-size: 13px; font-weight: 700; background: #f4f5f6; padding: 7px 10px; border-bottom: 1px solid #cdd1d5; width: 42%;">{{ d.k }}</th>
+                <td style="font-size: 13.5px; padding: 7px 10px; border-bottom: 1px solid #cdd1d5; font-family: 'JetBrains Mono', monospace; color: {{ d.color }};">{{ d.v }}</td>
+              </tr>
+            </sc-for>
+          </tbody>
+        </table>
+        <div>
+          <div style="font-size: 15.5px; font-weight: 700; color: #063a74; border-bottom: 1px solid #cdd1d5; padding-bottom: 5px;">{{ drawerBarsTitle }}</div>
+          <div style="display: flex; flex-direction: column; gap: 7px; margin-top: 10px;">
+            <sc-for list="{{ drawerBars }}" as="b" hint-placeholder-count="5">
+              <div>
+                <div style="display: flex; justify-content: space-between; font-size: 13px; gap: 8px;">
+                  <span>{{ b.name }}</span>
+                  <span style="font-family: 'JetBrains Mono', monospace;">{{ b.v }}</span>
+                </div>
+                <div style="height: 9px; background: #f4f5f6; border: 1px solid #cdd1d5; margin-top: 3px;">
+                  <div style="height: 100%; width: {{ b.w }}; background: #1c589c;"></div>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+        <div>
+          <div style="font-size: 15.5px; font-weight: 700; color: #063a74; border-bottom: 1px solid #cdd1d5; padding-bottom: 5px;">권고 조치</div>
+          <div style="font-size: 13.5px; margin-top: 8px; line-height: 1.6;">{{ drawerAction }}</div>
+        </div>
+        <div style="display: flex; gap: 6px;">
+          <button style="flex: 1; border: 1px solid #063a74; background: #063a74; color: #ffffff; font-size: 13px; padding: 8px 12px; border-radius: 2px; cursor: pointer;">지원 대상 지정</button>
+          <button style="flex: 1; border: 1px solid #b1b8be; background: #ffffff; color: #1e2124; font-size: 13px; padding: 8px 12px; border-radius: 2px; cursor: pointer;">상세 이력 조회</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;riskThreshold&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:70,&quot;tsType&quot;:&quot;number&quot;,&quot;min&quot;:40,&quot;max&quot;:90,&quot;step&quot;:5,&quot;section&quot;:&quot;예측&quot;,&quot;unit&quot;:&quot;점&quot;},&quot;showBand&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;예측&quot;},&quot;density&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;고밀도&quot;,&quot;표준&quot;],&quot;default&quot;:&quot;고밀도&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;표시&quot;},&quot;baseDate&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;2026-09-15&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;표시&quot;}}">
+class Component extends DCLogic {
+  state = { tab: 'status', drawer: null, region: '전체', level: '전체', term: '2026학년도 1학기', openCat: '⑤' };
+
+  cartoFill(idx) {
+    return idx >= 115 ? '#063a74' : idx >= 108 ? '#3d77b8' : idx >= 100 ? '#9dbcdd' : '#e4ebf3';
+  }
+
+  idxColor(i) { return i >= 125 ? '#de3412' : i >= 105 ? '#9e6a00' : '#228738'; }
+  idxLabel(i) { return i >= 125 ? '고부담' : i >= 105 ? '주의' : '정상'; }
+  riskColor(v) { return v >= 75 ? '#de3412' : v >= 55 ? '#9e6a00' : '#228738'; }
+  riskGrade(v) { return v >= 75 ? '고위험' : v >= 55 ? '주의' : '안정'; }
+  levelOf(name) {
+    if (name.indexOf('초등학교') >= 0) return '초등학교';
+    if (name.indexOf('고등학교') >= 0) return '고등학교';
+    return '중학교';
+  }
+
+  categoryData() {
+    return [
+      { no: '①', name: '교육과정·수업 운영', short: '교육과정·수업', admin: 0.15, delta: 0.1, subs: [
+        { name: '교육과정', h: 2.1, d: 0.1 }, { name: '시간표', h: 1.2, d: 0.0 },
+        { name: '학급담임', h: 3.4, d: 0.1 }, { name: '교과담당', h: 15.3, d: -0.1 }
+      ] },
+      { no: '②', name: '학생·학적 관리', short: '학생·학적', admin: 1, delta: 0.3, subs: [
+        { name: '학적', h: 0.9, d: 0.1 }, { name: '학생생활기록부', h: 1.4, d: 0.2 },
+        { name: '출결', h: 0.8, d: 0.0 }, { name: '전·입학', h: 0.4, d: 0.0 }, { name: '졸업', h: 0.3, d: 0.0 }
+      ] },
+      { no: '③', name: '평가·성적 관리', short: '평가·성적', admin: 1, delta: 0.2, subs: [
+        { name: '성적', h: 1.1, d: 0.1 }, { name: '평가', h: 0.9, d: 0.1 },
+        { name: '고사', h: 0.6, d: 0.0 }, { name: '성적처리', h: 0.5, d: 0.0 }
+      ] },
+      { no: '④', name: '학생 지도·지원', short: '학생 지도', admin: 0.5, delta: 0.2, subs: [
+        { name: '생활지도', h: 2.2, d: 0.1 }, { name: '상담', h: 1.1, d: 0.1 },
+        { name: '진로', h: 0.7, d: 0.0 }, { name: '보건', h: 0.4, d: 0.0 }, { name: '특수교육', h: 0.2, d: 0.0 }
+      ] },
+      { no: '⑤', name: '학교행정·행사 운영', short: '학교행정·행사', admin: 1, delta: 0.5, subs: [
+        { name: '학교업무분장', h: 0.8, d: 0.1 }, { name: '신학년도 준비', h: 1.2, d: 0.2 },
+        { name: '수상', h: 0.5, d: 0.0 }, { name: '동아리', h: 0.7, d: 0.0 },
+        { name: '행사', h: 1.4, d: 0.1 }, { name: '기타', h: 1.3, d: 0.1 }
+      ] }
+    ];
+  }
+
+  cartoGrid() {
+    return {
+      '영주': [1, 3], '봉화': [1, 4], '울진': [1, 6], '울릉': [1, 8],
+      '예천': [2, 2], '안동': [2, 3], '영양': [2, 5],
+      '문경': [3, 1], '의성': [3, 3], '청송': [3, 4], '영덕': [3, 5],
+      '상주': [4, 1], '구미': [4, 2], '포항': [4, 5],
+      '김천': [5, 1], '칠곡': [5, 2], '영천': [5, 4], '경주': [5, 5],
+      '성주': [6, 1], '고령': [6, 2], '경산': [6, 3], '청도': [6, 4]
+    };
+  }
+
+  regionData() {
+    return [
+      { name: '포항교육지원청', schools: 145, idx: 114 },
+      { name: '구미교육지원청', schools: 110, idx: 116 },
+      { name: '경주교육지원청', schools: 82, idx: 109 },
+      { name: '경산교육지원청', schools: 78, idx: 112 },
+      { name: '안동교육지원청', schools: 66, idx: 110 },
+      { name: '김천교육지원청', schools: 54, idx: 106 },
+      { name: '영주교육지원청', schools: 42, idx: 104 },
+      { name: '상주교육지원청', schools: 41, idx: 103 },
+      { name: '영천교육지원청', schools: 38, idx: 105 },
+      { name: '칠곡교육지원청', schools: 34, idx: 108 },
+      { name: '문경교육지원청', schools: 26, idx: 100 },
+      { name: '의성교육지원청', schools: 22, idx: 96 },
+      { name: '예천교육지원청', schools: 21, idx: 98 },
+      { name: '울진교육지원청', schools: 21, idx: 95 },
+      { name: '성주교육지원청', schools: 20, idx: 96 },
+      { name: '청도교육지원청', schools: 20, idx: 97 },
+      { name: '영덕교육지원청', schools: 19, idx: 94 },
+      { name: '고령교육지원청', schools: 18, idx: 95 },
+      { name: '봉화교육지원청', schools: 17, idx: 93 },
+      { name: '청송교육지원청', schools: 15, idx: 92 },
+      { name: '영양교육지원청', schools: 12, idx: 90 },
+      { name: '울릉교육지원청', schools: 6, idx: 88 }
+    ];
+  }
+
+  schoolData() {
+    return [
+      { name: '포항중앙초등학교', region: '포항교육지원청', level: '초등학교', classes: 48, teachers: 72, perTeacher: 27, docs: 38, hours: 12.4, projects: 9, idx: 138, when: '3월 2주', when2: '9월 2주' },
+      { name: '구미형곡중학교', region: '구미교육지원청', level: '중학교', classes: 36, teachers: 61, perTeacher: 25, docs: 34, hours: 11.8, projects: 8, idx: 131, when: '3월 3주', when2: '9월 3주' },
+      { name: '경산진량고등학교', region: '경산교육지원청', level: '고등학교', classes: 33, teachers: 68, perTeacher: 22, docs: 31, hours: 11.2, projects: 7, idx: 124, when: '6월 4주', when2: '12월 2주' },
+      { name: '경주황성초등학교', region: '경주교육지원청', level: '초등학교', classes: 41, teachers: 58, perTeacher: 26, docs: 29, hours: 10.6, projects: 6, idx: 117, when: '3월 3주', when2: '9월 3주' },
+      { name: '안동길주중학교', region: '안동교육지원청', level: '중학교', classes: 29, teachers: 48, perTeacher: 23, docs: 27, hours: 10.1, projects: 6, idx: 112, when: '4월 2주', when2: '10월 2주' },
+      { name: '김천지좌고등학교', region: '김천교육지원청', level: '고등학교', classes: 30, teachers: 63, perTeacher: 21, docs: 25, hours: 9.7, projects: 5, idx: 104, when: '7월 1주', when2: '12월 4주' },
+      { name: '영주가흥초등학교', region: '영주교육지원청', level: '초등학교', classes: 24, teachers: 37, perTeacher: 24, docs: 23, hours: 9.2, projects: 4, idx: 98, when: '3월 4주', when2: '9월 4주' },
+      { name: '상주중앙중학교', region: '상주교육지원청', level: '중학교', classes: 21, teachers: 34, perTeacher: 20, docs: 21, hours: 8.6, projects: 4, idx: 92, when: '5월 1주', when2: '11월 1주' },
+      { name: '영천금호초등학교', region: '영천교육지원청', level: '초등학교', classes: 18, teachers: 29, perTeacher: 19, docs: 19, hours: 8.1, projects: 3, idx: 86, when: '4월 3주', when2: '10월 3주' },
+      { name: '칠곡왜관고등학교', region: '칠곡교육지원청', level: '고등학교', classes: 18, teachers: 41, perTeacher: 17, docs: 18, hours: 7.8, projects: 3, idx: 81, when: '6월 2주', when2: '12월 2주' },
+      { name: '의성봉양초등학교', region: '의성교육지원청', level: '초등학교', classes: 12, teachers: 21, perTeacher: 16, docs: 15, hours: 7.1, projects: 2, idx: 74, when: '3월 4주', when2: '9월 4주' },
+      { name: '울진죽변중학교', region: '울진교육지원청', level: '중학교', classes: 9, teachers: 17, perTeacher: 14, docs: 13, hours: 6.4, projects: 2, idx: 68, when: '5월 2주', when2: '11월 2주' },
+      { name: '문경점촌초등학교', region: '문경교육지원청', level: '초등학교', classes: 20, teachers: 31, perTeacher: 18, docs: 20, hours: 8.4, projects: 3, idx: 89, when: '3월 3주', when2: '9월 3주' },
+      { name: '예천호명중학교', region: '예천교육지원청', level: '중학교', classes: 14, teachers: 26, perTeacher: 16, docs: 18, hours: 7.9, projects: 3, idx: 84, when: '4월 2주', when2: '10월 2주' },
+      { name: '성주월항초등학교', region: '성주교육지원청', level: '초등학교', classes: 11, teachers: 19, perTeacher: 15, docs: 16, hours: 7.4, projects: 2, idx: 79, when: '3월 4주', when2: '9월 4주' },
+      { name: '청도화양고등학교', region: '청도교육지원청', level: '고등학교', classes: 12, teachers: 27, perTeacher: 14, docs: 17, hours: 8.2, projects: 3, idx: 87, when: '6월 4주', when2: '12월 2주' },
+      { name: '영덕강구초등학교', region: '영덕교육지원청', level: '초등학교', classes: 9, teachers: 16, perTeacher: 13, docs: 15, hours: 7.2, projects: 2, idx: 77, when: '3월 4주', when2: '9월 4주' },
+      { name: '고령대가야중학교', region: '고령교육지원청', level: '중학교', classes: 10, teachers: 19, perTeacher: 14, docs: 16, hours: 7.5, projects: 2, idx: 80, when: '5월 1주', when2: '11월 1주' },
+      { name: '봉화춘양초등학교', region: '봉화교육지원청', level: '초등학교', classes: 7, teachers: 13, perTeacher: 11, docs: 14, hours: 7.0, projects: 2, idx: 75, when: '3월 4주', when2: '9월 4주' },
+      { name: '청송진보중학교', region: '청송교육지원청', level: '중학교', classes: 6, teachers: 13, perTeacher: 10, docs: 14, hours: 6.9, projects: 2, idx: 73, when: '5월 2주', when2: '11월 2주' },
+      { name: '영양입암초등학교', region: '영양교육지원청', level: '초등학교', classes: 5, teachers: 10, perTeacher: 9, docs: 13, hours: 6.7, projects: 1, idx: 71, when: '4월 3주', when2: '10월 3주' },
+      { name: '울릉저동초등학교', region: '울릉교육지원청', level: '초등학교', classes: 6, teachers: 11, perTeacher: 10, docs: 14, hours: 7.1, projects: 2, idx: 76, when: '3월 3주', when2: '9월 3주' }
+    ];
+  }
+
+  actionData() {
+    return {
+      '포항중앙초등학교': { factor: '학급수 급증 · 신규 사업 3건', action: '행정 지원 인력 2명 배치', effect: '-14.2%' },
+      '구미형곡중학교': { factor: '공문 접수량 전 학기 대비 +22%', action: '공문 일괄 처리 지원', effect: '-12.8%' },
+      '경산진량고등학교': { factor: '학업성적 처리 · 평가 집중', action: '성적처리 기간 업무 이관', effect: '-11.9%' },
+      '경주황성초등학교': { factor: '기간제·전보 교원 비율 31%', action: '업무 인수인계 지원단 운영', effect: '-10.6%' },
+      '안동길주중학교': { factor: '학교 평가 · 감사 일정 중복', action: '제출 자료 사전 취합 대행', effect: '-9.8%' },
+      '김천지좌고등학교': { factor: '입시 관련 행정업무 집중', action: '진학 행정 전담 인력 배치', effect: '-9.1%' },
+      '영주가흥초등학교': { factor: '방과후·돌봄 운영 업무', action: '돌봄 행정업무 외부 위탁', effect: '-8.4%' },
+      '상주중앙중학교': { factor: '행사 운영 4건 중복', action: '행사 일정 분산 조정', effect: '-7.6%' },
+      '영천금호초등학교': { factor: '자료 입력 반복 업무 과다', action: '입력 항목 자동 연계 적용', effect: '-6.9%' },
+      '칠곡왜관고등학교': { factor: '보직 미배정 교원 업무 편중', action: '업무 재분장 컨설팅', effect: '-6.1%' },
+      '의성봉양초등학교': { factor: '소규모교 1인 다업무 구조', action: '업무 통합 지원 인력 순회', effect: '-5.4%' },
+      '울진죽변중학교': { factor: '겸임 업무 다수 · 원거리 학교', action: '교육지원청 업무 대행', effect: '-4.8%' }
+    };
+  }
+
+  openDrawer(kind, row) { this.setState({ drawer: { kind: kind, row: row } }); }
+
+  renderVals() {
+    const isStatus = this.state.tab === 'status';
+    const threshold = this.props.riskThreshold ?? 70;
+    const region = this.state.region, level = this.state.level, term = this.state.term;
+    const navy = '#063a74';
+    const shades = ['#063a74', '#1c589c', '#3d77b8', '#6d9bcd', '#9dbcdd', '#c3d4e6'];
+
+    const RD = this.regionData();
+    const TOTAL_SCHOOLS = RD.reduce((a, r) => a + r.schools, 0);
+    const TOTAL_TEACHERS = 21800;
+    const regions = ['전체'].concat(RD.map(r => r.name));
+    const levels = ['전체', '초등학교', '중학교', '고등학교'];
+    const years = ['2024학년도', '2025학년도', '2026학년도'];
+    const sems = ['1학기', '2학기'];
+    const terms = [];
+    years.forEach(y => sems.forEach(s => terms.push(y + ' ' + s)));
+    const ti = Math.max(0, terms.indexOf(term));
+    const curSem = term.slice(-3);
+    const curYear = term.slice(0, term.length - 4);
+
+    const yi = Math.max(0, years.indexOf(curYear));
+    const tf = 0.92 + 0.04 * yi;
+    const lf = { '전체': 1, '초등학교': 1.04, '중학교': 0.97, '고등학교': 1.09 }[level];
+    const rec = RD.filter(r => r.name === region)[0];
+    const rif = rec ? rec.idx / 108 : 1;
+    const xf = lf * rif * (0.95 + 0.025 * yi);
+    const rShare = rec ? rec.schools / TOTAL_SCHOOLS : 1;
+    const lShare = { '전체': 1, '초등학교': 0.52, '중학교': 0.29, '고등학교': 0.19 }[level];
+    const share = rShare * lShare;
+    const schoolPop = Math.max(1, Math.round(TOTAL_SCHOOLS * share));
+    const teacherPop = Math.round(TOTAL_TEACHERS * share);
+    const avgIdx = 108.4 * xf;
+    const overload = 18.7 * xf;
+    const highSchools = Math.max(1, Math.round(103 * share * xf));
+    const docsMonth = Math.round(143880 * share * tf);
+    const prevTerm = ti === 0 ? '2023학년도 2학기' : terms[ti - 1];
+
+    const PX = 40, PT = 12, PH = 234, PW = 988, VW = 1040, VH = 280;
+    const yOf = v => PT + (100 - Math.max(0, Math.min(100, v))) / 100 * PH;
+    const gridOf = (vals) => vals.map(v => ({ y: yOf(v).toFixed(1), top: (yOf(v) / VH * 100).toFixed(2) + '%', label: v }));
+
+    const monthKeys = ['23.9', '23.10', '23.11', '23.12', '24.1', '24.2', '24.3', '24.4', '24.5', '24.6', '24.7', '24.8', '24.9', '24.10', '24.11', '24.12', '25.1', '25.2', '25.3', '25.4', '25.5', '25.6', '25.7', '25.8', '25.9', '25.10', '25.11', '25.12', '26.1', '26.2', '26.3', '26.4', '26.5', '26.6', '26.7', '26.8', '26.9', '26.10', '26.11', '26.12', '27.1', '27.2'];
+    const monthIdx = [104, 95, 101, 107, 81, 85, 107, 100, 95, 97, 103, 83, 109, 99, 106, 112, 84, 88, 112, 104, 99, 101, 108, 86, 114, 103, 110, 117, 88, 92, 121, 108, 102, 106, 113, 89, 118, 107, 113, 120, 90, 94];
+    const endKey = curSem === '1학기'
+      ? String(parseInt(curYear, 10) % 100) + '.8'
+      : String((parseInt(curYear, 10) + 1) % 100) + '.2';
+    const endAt = monthKeys.indexOf(endKey);
+    const axisFrom = monthKeys.indexOf(String(parseInt(curYear, 10) % 100) + '.3');
+    const winKeys = monthKeys.slice(axisFrom, axisFrom + 12);
+    const winVals = monthIdx.slice(axisFrom, axisFrom + 12).map(v => Math.round(v * xf));
+    const bandStart = curSem === '1학기' ? 0 : 6, bandEnd = bandStart + 5;
+    const tX = i => PX + i * (PW / (winKeys.length - 1));
+    const trendPath = winVals.map((v, i) => (i === 0 ? 'M' : 'L') + tX(i).toFixed(1) + ' ' + yOf(v * 0.66).toFixed(1)).join(' ');
+    const trend = {
+      gridLines: gridOf([150, 125, 100, 75, 50]).map(g => ({ y: yOf(g.label * 0.66).toFixed(1), top: (yOf(g.label * 0.66) / VH * 100).toFixed(2) + '%', label: g.label })),
+      avgY: yOf(66).toFixed(1),
+      bandX: tX(bandStart).toFixed(1), bandW: (tX(bandEnd) - tX(bandStart)).toFixed(1),
+      path: trendPath,
+      dots: winVals.map((v, i) => ({
+        x: tX(i).toFixed(1), y: yOf(v * 0.66).toFixed(1), v: v,
+        left: (tX(i) / VW * 100).toFixed(2) + '%', top: ((yOf(v * 0.66) - 7) / VH * 100).toFixed(2) + '%'
+      })),
+      xLabels: winKeys.map((k, i) => ({
+        left: (tX(i) / VW * 100).toFixed(2) + '%',
+        label: k.split('.')[1] + '월',
+        color: (i >= bandStart && i <= bandEnd) ? '#063a74' : '#5b656e'
+      })),
+      caption: '가로축은 ' + curYear + ' 12개월(3월~익년 2월)이며, 음영 구간이 선택한 ' + curSem + '입니다. 해당 학기 평균 부담지수는 ' + (winVals.slice(bandStart, bandEnd + 1).reduce((a, b) => a + b, 0) / 6).toFixed(1) + '이며, 학년도 개시월과 결산·평가월에 지수가 상승합니다.'
+    };
+
+    const CATS = this.categoryData();
+    const openCat = this.state.openCat;
+    const catScale = c => 1 + (xf - 1) * c.admin;
+    const catHours = CATS.map(c => c.subs.reduce((a, s) => a + s.h, 0) * catScale(c));
+    const total = catHours.reduce((a, b) => a + b, 0);
+    const maxCat = Math.max.apply(null, catHours);
+    const dcolorOf = v => v > 0.04 ? '#de3412' : v < -0.04 ? '#228738' : '#5b656e';
+    const signed = v => (v >= 0 ? '+' : '') + v.toFixed(1) + 'h';
+    const catBar = CATS.map((c, i) => ({
+      name: c.name, short: c.short, hours: catHours[i].toFixed(1) + 'h',
+      pct: (catHours[i] / total * 100).toFixed(1) + '%', color: shades[i]
+    }));
+    const catRows = CATS.map((c, i) => {
+      const open = openCat === c.no;
+      const sc = catScale(c);
+      const dl = c.delta * sc;
+      return {
+        name: c.no + ' ' + c.name, caret: open ? '▾' : '▸',
+        hours: catHours[i].toFixed(1) + 'h', pct: (catHours[i] / total * 100).toFixed(1) + '%',
+        delta: signed(dl), dcolor: dcolorOf(dl),
+        w: (catHours[i] / maxCat * 100).toFixed(1) + '%', color: shades[i],
+        bg: open ? '#eef2f7' : '#ffffff',
+        toggle: () => this.setState({ openCat: open ? null : c.no }),
+        subs: open ? c.subs.map(s => ({
+          name: s.name, hours: (s.h * sc).toFixed(1) + 'h',
+          pct: (s.h * sc / total * 100).toFixed(1) + '%',
+          delta: signed(s.d * sc), dcolor: dcolorOf(s.d * sc),
+          w: (s.h * sc / maxCat * 100).toFixed(1) + '%'
+        })) : []
+      };
+    });
+
+    const rolesRaw = [
+      { name: '부장교사 (업무분장 총괄)', n: 4218, hours: 14.2, tasks: 7.4, idx: 152 },
+      { name: '교무·연구 담당', n: 2486, hours: 13.1, tasks: 6.8, idx: 141 },
+      { name: '담임교사 (보직 겸임)', n: 7934, hours: 10.8, tasks: 5.2, idx: 118 },
+      { name: '담임교사', n: 13852, hours: 8.6, tasks: 3.6, idx: 94 },
+      { name: '교과전담·비담임', n: 3126, hours: 7.2, tasks: 3.1, idx: 79 },
+      { name: '교감·교장', n: 870, hours: 11.4, tasks: 4.9, idx: 108 }
+    ];
+    const roles = rolesRaw.map(r => {
+      const idx = Math.round(r.idx * xf);
+      return {
+        name: r.name, n: Math.round(r.n * share).toLocaleString(), hours: (r.hours * xf).toFixed(1) + 'h',
+        tasks: (r.tasks * xf).toFixed(1), idx: idx,
+        w: Math.min(100, idx / 170 * 100).toFixed(0) + '%', color: this.idxColor(idx)
+      };
+    });
+
+    const grid = this.cartoGrid();
+    const cartogram = RD.map(rd => {
+      const short = rd.name.replace('교육지원청', '');
+      const idx = Math.round(rd.idx * lf * [0.95, 0.98, 1.0][ti]);
+      const g = grid[short] || [6, 6];
+      const on = region === rd.name;
+      const fill = this.cartoFill(idx);
+      return {
+        name: short, idx: idx, row: g[0], col: g[1],
+        fill: region === '전체' || on ? fill : '#f4f5f6',
+        border: on ? '2px solid #3fa654' : '1px solid #b1b8be',
+        ink: (region === '전체' || on) && idx >= 108 ? '#ffffff' : '#1e2124',
+        pick: () => this.setState({ region: on ? '전체' : rd.name, drawer: null })
+      };
+    });
+    const cartoLegend = [
+      { fill: '#e4ebf3', label: '~99' }, { fill: '#9dbcdd', label: '100~107' },
+      { fill: '#3d77b8', label: '108~114' }, { fill: '#063a74', label: '115~' }
+    ];
+    const cartoNote = region === '전체'
+      ? '22개 교육지원청을 실제 시·군 위치에 맞춰 배치했습니다. 셀을 선택하면 해당 지원청으로 필터가 적용됩니다.'
+      : region + ' 선택 · 부담지수 ' + Math.round((RD.filter(r => r.name === region)[0] || { idx: 108 }).idx * lf * [0.95, 0.98, 1.0][ti]) + ' · 다시 누르면 전체로 돌아갑니다.';
+
+    const allSchools = this.schoolData();
+    const filtered = allSchools.filter(s => (region === '전체' || s.region === region) && (level === '전체' || s.level === level));
+    const schools = filtered.map((s, i) => {
+      const row = Object.assign({}, s, {
+        docs: Math.round(s.docs * xf), hours: Number((s.hours * xf).toFixed(1)),
+        idx: Math.round(s.idx * xf), rowBg: i % 2 === 1 ? '#fafbfc' : '#ffffff'
+      });
+      row.color = this.idxColor(row.idx);
+      row.label = this.idxLabel(row.idx);
+      row.open = () => this.openDrawer('status', row);
+      return row;
+    });
+
+    const traitScale = v => Math.round(v * xf);
+    const traitRow = (name, v, meta) => {
+      const val = traitScale(v);
+      return { name: name, v: val, color: this.idxColor(val), w: Math.min(100, val / 150 * 100).toFixed(0) + '%', meta: meta };
+    };
+    const traits = [
+      { title: '학교 규모별 (학급 수)', rows: [
+        traitRow('31학급 이상', 128, '대규모 · ' + Math.round(schoolPop * 0.21).toLocaleString() + '교'),
+        traitRow('16~30학급', 108, '중규모 · ' + Math.round(schoolPop * 0.47).toLocaleString() + '교'),
+        traitRow('15학급 이하', 89, '소규모 · ' + Math.round(schoolPop * 0.32).toLocaleString() + '교')
+      ] },
+      { title: '교원 1인당 학생 수', rows: [
+        traitRow('25명 이상', 131, '학생 수 대비 부담 최고 구간'),
+        traitRow('18~24명', 112, '평균 구간'),
+        traitRow('17명 이하', 94, '소인수 구간')
+      ] },
+      { title: '사업 참여 수 (연간)', rows: [
+        traitRow('7건 이상', 139, '공모·특별교부 사업 다수'),
+        traitRow('4~6건', 115, '평균 참여'),
+        traitRow('3건 이하', 92, '참여 최소')
+      ] }
+    ];
+
+    const fxf = lf * rif;
+    const fTermLabel = '2026년 10월 ~ 2027년 9월';
+    const monthLabels = ['26.10','26.11','26.12','27.1','27.2','27.3','27.4','27.5','27.6','27.7','27.8','27.9'];
+    const weeks = monthLabels.map(k => (k === '26.10' || k === '27.1' ? "'" + k.split('.')[0] + ' ' : '') + k.split('.')[1] + '월');
+    const monthBase = [79, 84, 88, 62, 58, 91, 77, 70, 73, 82, 55, 86];
+    const series = monthBase.map(v => Math.min(100, Math.round(v * fxf)));
+    const prevSeries = series.map(v => Math.max(0, Math.round(v * 0.95)));
+    const fX = i => PX + i * (PW / (weeks.length - 1));
+    const pathOf = (from, to, arr) => {
+      let s = '';
+      for (let i = from; i <= to; i++) s += (i === from ? 'M' : 'L') + fX(i).toFixed(1) + ' ' + yOf(arr[i]).toFixed(1);
+      return s;
+    };
+    let band = '';
+    for (let i = 0; i < series.length; i++) band += (i === 0 ? 'M' : 'L') + fX(i).toFixed(1) + ' ' + yOf(Math.min(100, series[i] + 8)).toFixed(1);
+    for (let i = series.length - 1; i >= 0; i--) band += 'L' + fX(i).toFixed(1) + ' ' + yOf(Math.max(0, series[i] - 8)).toFixed(1);
+    band += ' Z';
+    const predOnly = series;
+    const peakVal = Math.max.apply(null, predOnly);
+    const peakIdx = series.map((v, i) => i).sort((a, b) => series[b] - series[a]).slice(0, 3);
+    const peakWeek = weeks[series.indexOf(peakVal)];
+    const avgRisk = predOnly.reduce((a, b) => a + b, 0) / predOnly.length;
+    const riskVals = filtered.map(s => Math.round(Math.round(s.idx * fxf) * 0.68));
+    const overRatio = riskVals.length ? riskVals.filter(v => v >= threshold).length / riskVals.length : 0.5;
+    const thresholdSchools = Math.max(1, Math.round(schoolPop * overRatio * 0.4));
+
+    const fc = {
+      gridLines: gridOf([100, 75, 50, 25, 0]),
+      thresholdY: yOf(threshold).toFixed(1),
+      actualPath: pathOf(0, prevSeries.length - 1, prevSeries),
+      predPath: pathOf(0, series.length - 1, series),
+      bandPath: band,
+      peaks: peakIdx.map(i => ({
+        x: fX(i).toFixed(1), y: yOf(series[i]).toFixed(1), rx: (fX(i) - 14).toFixed(1),
+        left: (fX(i) / VW * 100).toFixed(2) + '%', top: ((yOf(series[i]) - 8) / VH * 100).toFixed(2) + '%',
+        label: series[i]
+      })),
+      xLabels: weeks.map((w, i) => ({ left: (fX(i) / VW * 100).toFixed(2) + '%', label: w })),
+      caption: '최근 실적까지 학습한 모델이 향후 1년(' + fTermLabel + ')의 월별 위험도를 예측한 결과입니다. 회색 점선은 전년 동기 실측값이며, ' + peakWeek + ' 전후로 위험도가 임계값(' + threshold + ')을 초과할 것으로 예측됩니다. 음영은 95% 예측 구간.'
+    };
+
+    const growth = [1.005, 1.11, 1.14, 1.06, 1.13];
+    const openFc = this.state.openFc;
+    const catScaleF = c => 1 + (fxf - 1) * c.admin;
+    const catHoursF = CATS.map(c => c.subs.reduce((a, s) => a + s.h, 0) * catScaleF(c));
+    const maxCatF = Math.max.apply(null, catHoursF);
+    const typeForecast = CATS.map((c, i) => {
+      const sc = catScaleF(c);
+      const now = catHoursF[i];
+      const next = now * growth[i];
+      const diff = next - now;
+      const open = openFc === c.no;
+      const weights = c.subs.map((s, j) => s.h * sc * (0.6 + 0.35 * (j % 3)));
+      const wSum = weights.reduce((a, b) => a + b, 0) || 1;
+      return {
+        name: c.no + ' ' + c.name, caret: open ? '▾' : '▸',
+        now: now.toFixed(1) + 'h', next: next.toFixed(1) + 'h',
+        delta: (diff >= 0 ? '+' : '') + diff.toFixed(1) + 'h',
+        dcolor: diff > 0.05 ? '#de3412' : diff < -0.05 ? '#228738' : '#5b656e',
+        wNow: Math.min(100, now / maxCatF * 100).toFixed(1) + '%',
+        wNext: Math.min(100, next / maxCatF * 100).toFixed(1) + '%',
+        color: diff > 0.05 ? '#de3412' : navy,
+        bg: open ? '#eef2f7' : '#ffffff',
+        toggle: () => this.setState({ openFc: open ? null : c.no }),
+        subs: open ? c.subs.map((s, j) => {
+          const sNow = s.h * sc;
+          const sDiff = diff * (weights[j] / wSum);
+          const sNext = sNow + sDiff;
+          return {
+            name: s.name, now: sNow.toFixed(1) + 'h', next: sNext.toFixed(1) + 'h',
+            delta: (sDiff >= 0 ? '+' : '') + sDiff.toFixed(1) + 'h',
+            dcolor: sDiff > 0.05 ? '#de3412' : sDiff < -0.05 ? '#228738' : '#5b656e',
+            wNow: Math.min(100, sNow / maxCatF * 100).toFixed(1) + '%',
+            wNext: Math.min(100, sNext / maxCatF * 100).toFixed(1) + '%'
+          };
+        }) : []
+      };
+    });
+
+    const factorsRaw = [
+      ['공문 접수량 증가율', 27.4, '학사일정 개시 주차에 집중'],
+      ['학사일정 밀집도', 22.1, '평가·행사 일정 중복 구간'],
+      ['교원 1인당 담당 업무 수', 19.6, '보직 미배정 학교에서 상승'],
+      ['학급당 학생 수', 16.2, '25명 이상 구간에서 급증'],
+      ['사업 참여 건수', 14.7, '공모사업 7건 이상 학교']
+    ];
+    const factors = factorsRaw.map((f, i) => ({
+      name: f[0], v: f[1].toFixed(1), note: f[2],
+      w: (f[1] / 27.4 * 100).toFixed(0) + '%', color: shades[Math.min(5, i)]
+    }));
+
+    const acts = this.actionData();
+    const riskSchoolRows = schools.map((s, i) => {
+      const risk = Math.max(28, Math.round(s.idx * 0.68));
+      const row = Object.assign({}, s, {
+        risk: risk, color: this.riskColor(risk), grade: this.riskGrade(risk),
+        when: i % 2 === 0 ? s.when : s.when2,
+        w: Math.min(100, risk) + '%', rowBg: i % 2 === 1 ? '#fafbfc' : '#ffffff'
+      });
+      row.open = () => this.openDrawer('risk', row);
+      return row;
+    }).sort((a, b) => a.name.localeCompare(b.name, 'ko'))
+      .map((r, i) => Object.assign(r, { rowBg: i % 2 === 1 ? '#fafbfc' : '#ffffff' }));
+
+    const kpis = isStatus ? [
+      { label: '업무 과중 위험도', value: avgIdx.toFixed(1), unit: '', delta: (yi === 0 ? '2023학년도' : years[yi - 1]) + ' 대비 +' + (avgIdx - 108.4 * xf * 0.972).toFixed(1), deltaColor: '#de3412' },
+      { label: '업무 부담 교원 비율', value: overload.toFixed(1), unit: '%', delta: '대상 교원 ' + teacherPop.toLocaleString() + '명 중 ' + Math.round(teacherPop * overload / 100).toLocaleString() + '명', deltaColor: '#9e6a00' },
+      { label: '교원 부담이 큰 학교 수', value: highSchools.toLocaleString(), unit: '교', delta: '전체 ' + schoolPop.toLocaleString() + '교 중 ' + (highSchools / Math.max(1, schoolPop) * 100).toFixed(1) + '%', deltaColor: '#5b656e' },
+      { label: '월별 행정업무 처리량', value: docsMonth.toLocaleString(), unit: '건', delta: '교원 1인당 ' + (docsMonth / Math.max(1, teacherPop)).toFixed(1) + '건 · ' + term, deltaColor: '#5b656e' }
+    ] : [
+      { label: '예상 고위험 학교', value: thresholdSchools.toLocaleString(), unit: '교', delta: '임계값 ' + threshold + ' 초과 예측 · 현재 고부담 ' + highSchools.toLocaleString() + '교 대비 ' + (thresholdSchools - highSchools >= 0 ? '+' : '') + (thresholdSchools - highSchools).toLocaleString() + '교', deltaColor: '#de3412' },
+      { label: '예상 고위험 교원 비율', value: (overload * 1.08).toFixed(1), unit: '%', delta: '약 ' + Math.round(teacherPop * overload * 1.08 / 100).toLocaleString() + '명', deltaColor: '#9e6a00' },
+      { label: '최고 위험 시기', value: peakWeek, unit: '', delta: '예측 위험도 ' + peakVal, deltaColor: '#de3412' },
+      { label: '평균 예측 위험도', value: avgRisk.toFixed(1), unit: '/ 100', delta: '향후 12개월 평균', deltaColor: '#5b656e' }
+    ];
+
+    const d = this.state.drawer;
+    let drawerTitle = '', drawerSub = '', drawerRows = [], drawerBars = [], drawerAction = '', drawerBarsTitle = '';
+    if (d && d.kind === 'status') {
+      const s = d.row;
+      drawerTitle = s.name;
+      drawerSub = s.region + ' · ' + s.level + ' · 학급 ' + s.classes + '개 · ' + term;
+      drawerRows = [
+        { k: '교원 수', v: s.teachers + '명', color: '#1e2124' },
+        { k: '교원 1인당 학생 수', v: s.perTeacher + '명', color: '#1e2124' },
+        { k: '교원 1인당 월 공문', v: s.docs + '건', color: '#1e2124' },
+        { k: '주당 행정업무 시간', v: s.hours.toFixed(1) + '시간', color: '#1e2124' },
+        { k: '사업 참여 건수', v: s.projects + '건', color: '#1e2124' },
+        { k: '업무부담지수', v: s.idx + ' (평균 100)', color: this.idxColor(s.idx) },
+        { k: '상태', v: this.idxLabel(s.idx), color: this.idxColor(s.idx) }
+      ];
+      drawerBarsTitle = '카테고리별 소요 시간';
+      drawerBars = CATS.map((c, i) => {
+        const h = catHours[i] * (s.hours / Math.max(1, 9.4 * xf) * 0.5 + 0.5);
+        return { name: c.no + ' ' + c.short, v: h.toFixed(1) + 'h', w: Math.min(100, h / maxCat * 100).toFixed(0) + '%' };
+      });
+      drawerAction = (acts[s.name] || {}).action
+        ? '권고: ' + acts[s.name].action + '. 반복 입력 업무의 자동 연계 적용과 업무 재분장 컨설팅을 병행할 것을 권고합니다.'
+        : '반복 입력 업무의 자동 연계 적용과 업무 재분장 컨설팅을 우선 검토하십시오.';
+    } else if (d && (d.kind === 'risk' || d.kind === 'priority')) {
+      const p = d.row;
+      const a = acts[p.name] || { factor: '업무량 증가', action: '행정 지원 검토', effect: '-5.0%' };
+      drawerTitle = p.name;
+      drawerSub = p.region + ' · ' + fTermLabel + ' 예측';
+      drawerBarsTitle = '업무 과중 영향 요인';
+      drawerRows = [
+        { k: '예측 위험도', v: p.risk + ' / 100', color: this.riskColor(p.risk) },
+        { k: '등급', v: this.riskGrade(p.risk), color: this.riskColor(p.risk) },
+        { k: '현재 부담지수', v: p.idx + '', color: '#1e2124' },
+        { k: '과중 예상 시기', v: p.when, color: '#1e2124' },
+        { k: '임계값', v: threshold + '', color: '#1e2124' },
+        { k: '주요 요인', v: a.factor, color: '#1e2124' },
+        { k: '경감 기대효과', v: a.effect, color: '#228738' }
+      ];
+      drawerBars = factorsRaw.slice(0, 5).map(f => ({ name: f[0], v: f[1].toFixed(1) + '%', w: (f[1] / 24.8 * 100).toFixed(0) + '%' }));
+      drawerAction = a.action + ' 조치를 ' + p.when + ' 이전에 적용할 경우 예측 위험도가 ' + a.effect + ' 수준으로 개선될 것으로 추정됩니다. 조치 후 4주간 위험도 재산출 결과를 확인해 자원 배치를 조정하십시오.';
+    }
+
+    return {
+      baseDate: this.props.baseDate ?? '2026-09-15',
+      rowPad: (this.props.density ?? '고밀도') === '고밀도' ? '6px' : '11px',
+      isStatus: isStatus, isForecast: !isStatus,
+      goStatus: () => this.setState({ tab: 'status', drawer: null }),
+      goForecast: () => this.setState({ tab: 'forecast', drawer: null }),
+      statusBorder: isStatus ? navy : 'transparent', forecastBorder: isStatus ? 'transparent' : navy,
+      statusColor: isStatus ? navy : '#5b656e', forecastColor: isStatus ? '#5b656e' : navy,
+      pageTitle: isStatus ? '교원 업무 부담 현황' : '업무 과중 위험 예측',
+      pageSub: isStatus
+        ? 'NEIS·업무관리시스템 처리 이력 기반 업무 부담 정량화 결과 · ' + term
+        : '학사일정·학교 특성·업무 이력 기반 과중 위험 예측 · 예측 대상 ' + fTermLabel,
+      regions: regions, region: region, onRegion: e => this.setState({ region: e.target.value, drawer: null }),
+      levels: levels, level: level, onLevel: e => this.setState({ level: e.target.value, drawer: null }),
+      terms: terms, term: term,
+      showPeriod: isStatus,
+      years: years, year: curYear,
+      onYear: e => this.setState({ term: e.target.value + ' ' + this.state.term.slice(-3), drawer: null }),
+      sems: sems, sem: curSem,
+      onSem: e => this.setState({ term: this.state.term.slice(0, this.state.term.length - 4) + ' ' + e.target.value, drawer: null }),
+      onReset: () => this.setState({ region: '전체', level: '전체', term: '2026학년도 1학기', drawer: null }),
+      schoolPop: schoolPop.toLocaleString(), teacherPop: teacherPop.toLocaleString(),
+      filteredCount: filtered.length, noSchools: filtered.length === 0,
+      kpis: kpis, trend: trend, catBar: catBar, catRows: catRows, roles: roles,
+      cartogram: cartogram, cartoLegend: cartoLegend, cartoNote: cartoNote,
+      schools: schools, traits: traits,
+      threshold: threshold, showBand: (this.props.showBand ?? true) === true,
+      forecastTerm: fTermLabel, fc: fc, typeForecast: typeForecast, factors: factors,
+      riskSchoolRows: riskSchoolRows,
+      hasDrawer: !!d, closeDrawer: () => this.setState({ drawer: null }),
+      drawerTitle: drawerTitle, drawerSub: drawerSub, drawerRows: drawerRows,
+      drawerBars: drawerBars, drawerBarsTitle: drawerBarsTitle, drawerAction: drawerAction
+    };
+  }
+}
+</script>
+</body>
+</html>
